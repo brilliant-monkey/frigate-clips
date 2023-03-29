@@ -1,7 +1,6 @@
 
-Container Image: [ghcr.io/brilliant-monkey/frigate-clips](ghcr.io/brilliant-monkey/frigate-clips)
-
-Tags: [0.0.1](ghcr.io/brilliant-monkey/frigate-clips:0.0.1)
+[Images](https://github.com/brilliant-monkey/frigate-clips/pkgs/container/frigate-clips)
+Tags: [0.0.1](https://github.com/brilliant-monkey/frigate-clips/pkgs/container/frigate-clips:0.0.1)
 
 # Clips
 
