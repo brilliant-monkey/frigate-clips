@@ -27,7 +27,7 @@ Tags:
 ### Recommended Flow
 
 1. Frigate publishes `new` event of a detection to MQTT
-1. Home Assistant triggers a new push notification to a device using the `after.id` property as a `tag` key
+1. Home Assistant triggers a new push notification to a device using the `after.id` property as a `tag` key from the `trigger.payload_json`.
 1. Clips receives the MQTT `new` event message from the `frigate/events` topic and generates a clip if the event is an `end` (detection is complete).
 1. Clips publishes a complete event on the `frigate/clips` MQTT topic
 1. Home assistant triggers a new push notification to update the existing notification using the `after.id` property as a `tag` key
@@ -41,9 +41,9 @@ Tags:
   ```
   - service: notify.notify
     data:
-      message: A {{ label }} was detected on the {{ cameraName }} camera.
+      message: A {{ trigger.payload_json['after']['label'] }} was detected on the {{ trigger.payload_json['after']['camera'] }} camera.
       data:
-        tag: "{{ eventId }}"
+        tag: "{{ trigger.payload_json['after']['id'] }}"
         group: frigate
         video: "https://<my_clips_endpoint>{{ trigger.payload_json['clip_url'] }}"
         push:
