@@ -1,6 +1,7 @@
 
-[Images](https://github.com/brilliant-monkey/frigate-clips/pkgs/container/frigate-clips)
-Tags: [0.0.1](https://github.com/brilliant-monkey/frigate-clips/pkgs/container/frigate-clips:0.0.1)
+[Container Images](https://github.com/brilliant-monkey/frigate-clips/pkgs/container/frigate-clips)
+Tags:
+1. 0.0.1
 
 # Clips
 
