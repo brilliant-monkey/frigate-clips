@@ -9,7 +9,7 @@ Tags: [0.0.1](brilliantmonkey.azurecr.io/frigate/clips:0.0.1)
 
 Clips is a thumbnail generation tool. It will receive a Frigate event once it is finished and turn it into a short 5 second video clip. After generation, it publishes an event to `frigate/clips` topic which allows for automation (sending a notification of the recording).
 
-## Running Frigate Clips
+## Running Clips
 
 ### Dependencies
 
