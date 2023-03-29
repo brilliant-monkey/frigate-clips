@@ -49,3 +49,29 @@ Tags:
         push:
           sound: none
   ```
+
+#### Notes
+
+You can simplify the setup by using variables in your automation:
+```
+variables:
+  payload: "{{ trigger.payload_json }}"
+  after: "{{ payload['after'] }}"
+  label: "{{ after['label'] }}"
+  camera: "{{ after['camera'] }}"
+  clipPath: "{{ payload['clip_uri'] }}"
+```
+
+Notify
+
+```
+- service: notify.notify
+  data:
+    message: A {{ label }} was detected on the {{ camera }} camera.
+    data:
+      tag: "{{ id }}"
+      group: frigate
+      video: "https://<my_clips_endpoint>{{ clipPath }}"
+      push:
+        sound: none
+```
