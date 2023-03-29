@@ -34,7 +34,7 @@ Tags: [0.0.1](brilliantmonkey.azurecr.io/frigate/clips:0.0.1)
 - Add a trigger of `MQTT event` trigging by event on topic `frigate/clips`
 - Using the `notify` service, publish a notification using the below block as a template:
   ```
-    - service: notify.notify
+  - service: notify.notify
     data:
       message: A {{ label }} was detected on the {{ cameraName }} camera.
       data:
