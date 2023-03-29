@@ -1,0 +1,13 @@
+ffmpeg:
+  output_directory: /app/clips
+frigate:
+  base_url: https://frigate.brilliantmonkey.net/vod
+mqtt:
+  endpoint: tcp://homeassistant.local:1883
+  client_id: frigate-clips
+  consumer:
+    topic: frigate/events
+  producer:
+    topic: frigate/clips
+  username: mqtt-user
+  password: super-secret-password
