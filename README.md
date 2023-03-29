@@ -1,7 +1,7 @@
 
-Container Image: [brilliantmonkey.azurecr.io/frigate/clips](brilliantmonkey.azurecr.io/frigate/clips)
+Container Image: [ghcr.io/brilliant-monkey/frigate-clips](ghcr.io/brilliant-monkey/frigate-clips)
 
-Tags: [0.0.1](brilliantmonkey.azurecr.io/frigate/clips:0.0.1)
+Tags: [0.0.1](ghcr.io/brilliant-monkey/frigate-clips:0.0.1)
 
 # Clips
 
