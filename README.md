@@ -56,10 +56,10 @@ You can simplify the setup by using variables in your automation:
 ```
 variables:
   payload: "{{ trigger.payload_json }}"
-  after: "{{ payload['after'] }}"
-  label: "{{ after['label'] }}"
-  camera: "{{ after['camera'] }}"
-  clipPath: "{{ payload['clip_uri'] }}"
+  after: "{{ payload.after }}"
+  label: "{{ after.label }}"
+  camera: "{{ after.camera }}"
+  clipPath: "{{ payload.clip_uri }}"
 ```
 
 Notify
