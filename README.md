@@ -4,6 +4,8 @@ Container Image: [brilliantmonkey.azurecr.io/frigate/clips](brilliantmonkey.azur
 
 Tags: [0.0.1](brilliantmonkey.azurecr.io/frigate/clips:0.0.1)
 
+![demo](https://user-images.githubusercontent.com/11224731/228419650-565ffcc4-2213-4312-8331-7c3e0cef01b3.gif)
+
 ## Running Frigate Clips
 
 ### Dependencies
