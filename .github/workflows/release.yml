@@ -1,0 +1,30 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/github-script@v6
+      id: tag
+      with:
+        result-encoding: string
+        script: return context.sha.substring(0,7)
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pull Latest
+      run: docker pull ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.result }}
+    - name: Tag Latest
+      run: docker tag ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.result }} ghcr.io/${{ github.repository }}:latest
+    - name: Tag Version
+      run: docker tag ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.result }} ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+    - name: push image to GitHub Container Registry
+      run: docker push --all-tags ghcr.io/${{ github.repository }}

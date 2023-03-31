@@ -1,0 +1,139 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: "Build"
+  image: plugins/docker
+  settings:
+    repo: git.brilliantmonkey.net/frigate/clips
+    registry: git.brilliantmonkey.net
+    username: docker
+    password:
+      from_secret: GITEA_DOCKER_TOKEN
+    custom_dns:
+      - 10.5.10.8
+    tags:
+      - ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT:0:4}
+  when:
+    event:
+      - push
+- name: "[TAG] Publish to Gitea"
+  image: plugins/docker
+  settings:
+    repo: git.brilliantmonkey.net/frigate/clips
+    registry: git.brilliantmonkey.net
+    username: docker
+    password:
+      from_secret: GITEA_DOCKER_TOKEN
+    custom_dns:
+      - 10.5.10.8
+    tags:
+      - ${DRONE_TAG}
+      - latest
+  when:
+    event:
+      - tag
+- name: "[TAG] Publish to Github"
+  image: plugins/docker
+  settings:
+    repo: ghcr.io/brilliant-monkey/frigate:clips
+    username: docker
+    password:
+      from_secret: GITHUB_CONTAINER_REGISTRY_TOKEN
+    tags:
+      - ${DRONE_TAG}
+      - latest
+    environment:
+      BUILD_ENV: production
+    registry: git.brilliantmonkey.net
+    custom_dns:
+      - 10.5.10.8
+  when:
+    event:
+      - tag
+- name: "[Master] Deploy"
+  image: quay.io/honestbee/drone-kubernetes
+  settings:
+    namespace: default
+    deployment: frigate-clips
+    container: app
+    repo: git.brilliantmonkey.net/frigate/clips
+    tag: ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT:0:4}
+    kubernetes_server:
+      from_secret: KUBE_SERVER
+    kubernetes_token:
+      from_secret: DRONE_TOKEN
+    kubernetes_cert:
+      from_secret: KUBE_CA
+  when:
+    event:
+      - push
+    branch:
+      - master
+- name: "[Tag] Deploy"
+  image: quay.io/honestbee/drone-kubernetes
+  settings:
+    namespace: default
+    deployment: frigate-clips
+    container: app
+    repo: git.brilliantmonkey.net/frigate/clips
+    tag: ${DRONE_TAG}
+    kubernetes_server:
+      from_secret: KUBE_SERVER_PROD
+    kubernetes_token:
+      from_secret: DRONE_TOKEN_PROD
+    kubernetes_cert:
+      from_secret: KUBE_CA_PROD
+  when:
+    event:
+      - tag
+- name: '[Push] Slack'
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: SLACK_WEBHOOK_URL
+    channel: ci
+    link_names: true
+    template: >
+      {{#success build.status}}
+        *Build Completed Successfully*
+
+        `{{repo.name}}` — <{{build.link}}|Build #{{build.number}} on {{build.branch}}>
+      {{else}}
+        *Build Failed*
+        
+        `{{repo.name}}` — <{{build.link}}|Build #{{build.number}} on {{build.branch}}>
+      {{/success}}
+  when:
+    event:
+      - push
+    branch: 
+      - master
+    status:
+      - success
+      - failure
+
+- name: '[TAG] Slack'
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: SLACK_WEBHOOK_URL
+    channel: ci
+    link_names: true
+    template: >
+      {{#success build.status}}
+        *Deployment to Production Completed Successfully*
+
+        `{{repo.name}}` version {{tag}} — <{{build.link}}|Build #{{build.number}}>
+      {{else}}
+        *Deployment to Production Failed*
+        
+        `{{repo.name}}` version {{tag}}— <{{build.link}}|Build #{{build.number}}>
+      {{/success}}
+  when:
+    event:
+      - tag
+    status:
+      - success
+      - failure

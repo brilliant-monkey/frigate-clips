@@ -1,0 +1,27 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/github-script@v6
+      id: tag
+      with:
+        result-encoding: string
+        script: return context.sha.substring(0,7)
+    - name: login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: create image from repository
+      run: docker buildx build --platform linux/amd64 --cache-to type=gha --cache-from type=gha -t ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.result }} .
+    - name: push image to GitHub Container Registry
+      run: docker push ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.result }}

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-clips
+  labels:
+    platform: frigate
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: frigate-clips

@@ -1,0 +1,42 @@
+name: pull-request
+
+on:
+  pull_request:
+    branches:
+      - "*"
+
+env:
+  SHA: ${{ github.sha }}
+  REPO: ${{ github.repository }}
+  PR: ${{ github.event.pull_request.number }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      image_name: ${{ steps.tag.outputs.image_name }}
+    steps:
+    - name: Get Docker image name
+      id: tag
+      run: |
+        export TAG=$(echo $SHA | cut -c 1-6)
+        
+        export IMAGE_NAME=$(echo ghcr.io/$REPO:$TAG-$PR)
+        echo $IMAGE_NAME
+
+        echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: create image from repository
+      run: docker buildx build --platform linux/amd64 --cache-to type=gha --cache-from type=gha -t ${{ needs.setup.outputs.image_name }} .
+    - name: push image to GitHub Container Registry
+      run: docker push ${{ needs.setup.outputs.image_name }}

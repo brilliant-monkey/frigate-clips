@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frigate-clips
+  labels:
+    app: frigate-clips
+    platform: frigate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frigate-clips
+      platform: frigate
+  template:
+    metadata:
+      labels:
+        app: frigate-clips
+        platform: frigate
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+        - name: app
+          image: git.brilliantmonkey.net/frigate/clips
+          env:
+            - name: FRIGATE_CLIPS_CONFIG_PATH
+              value: "/app/config.yml"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: PORT
+              value: "80"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /clips/v1/health
+              scheme: HTTP
+              port: 80
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /clips/v1/health
+              scheme: HTTP
+              port: 80
+          volumeMounts:
+            - mountPath: /app/config.yml
+              subPath: secret.yml
+              name: secret
+            - mountPath: /app/clips
+              name: clips-volume
+      volumes:
+        - name: secret
+          secret:
+            secretName: frigate-clips-secret
+        - name: clips-volume
+          persistentVolumeClaim:
+            claimName: frigate-clips-storage
+            
