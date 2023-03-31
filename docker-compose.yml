@@ -5,19 +5,26 @@ services:
     image: ghcr.io/brilliant-monkey/frigate-clips:latest
     environment:
       - FRIGATE_CLIPS_CONFIG_PATH=/app/config.yml
-      - PORT=8080
+      - PORT=8777
     ports:
-      - 8080:8080
+      - 8080:8777
     volumes:
-      - ./config.yaml:/app/config.yml:ro
+      - ./secret.docker.yml:/app/config.yml:ro
       - ./clips/:/app/clips:rw
+    depends_on:
+      - frigate-kafka-relay
+      - kafka
   frigate-kafka-relay:
     image: ghcr.io/brilliant-monkey/frigate-kafka-relay:latest
     environment:
       - FRIGATE_KAFKA_RELAY_CONFIG_PATH=config.yml
       - PORT=8082
+    ports:
+      - 8082:8082
     volumes:
-      - ../frigate-kafka-producer/config.yml:/app/config.yml:ro
+      - ./relay.secret.docker.yml:/app/config.yml:ro
+    depends_on:
+      - kafka
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
@@ -25,6 +32,8 @@ services:
       - 8081:8080
     environment:
       DYNAMIC_CONFIG_ENABLED: true
+    depends_on:
+      - kafka
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
     ports:
