@@ -24,7 +24,7 @@ func CreateRouter(config *config.AppConfig) *mux.Router {
 		router.
 			Methods(route.Method, http.MethodOptions).
 			Path(fmt.Sprint("/clips/v1", route.Path)).
-			Handler(http.StripPrefix("/clips/v1/", route.HandlerFunc)).
+			Handler(http.StripPrefix("/clips/v1", route.HandlerFunc)).
 			Name(route.Name)
 	}
 	return router
