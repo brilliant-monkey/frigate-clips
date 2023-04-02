@@ -1,5 +1,5 @@
 
-FROM golang:1.20 AS build
+FROM golang:1.18 AS build
 
 WORKDIR /app
 
@@ -12,5 +12,10 @@ FROM linuxserver/ffmpeg
 WORKDIR /app
 
 COPY --from=build /app/app .
+
+RUN adduser --system runner
+RUN chown runner runtime
+
+USER runner
 
 ENTRYPOINT [ "./app" ]
