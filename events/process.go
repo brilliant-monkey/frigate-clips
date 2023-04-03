@@ -11,6 +11,7 @@ import (
 	"git.brilliantmonkey.net/frigate/frigate-clips/ffmpeg"
 	"git.brilliantmonkey.net/frigate/frigate-clips/types"
 	"github.com/brilliant-monkey/go-kafka-client"
+	"golang.org/x/exp/slices"
 )
 
 type FrigateEventConsumer struct {
@@ -43,10 +44,16 @@ func (consumer *FrigateEventConsumer) Consume() error {
 			return
 		}
 
+		if slices.Contains(event.After.EnteredZones, "property") {
+			log.Printf("Skipping event %s as it did not occur within watched zones.", event.After.Id)
+			return
+		}
+
 		after := event.After
 		startTime := after.StartTime * float64(time.Microsecond)
 		endTime := after.EndTime * float64(time.Microsecond)
 		duration := (endTime - startTime) / float64(time.Microsecond)
+
 		camera := after.Camera
 
 		log.Printf("Processing event %s with duration of %f seconds.", after.Id, duration)
