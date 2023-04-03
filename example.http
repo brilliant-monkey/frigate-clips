@@ -1,0 +1,13 @@
+
+
+@host=http://localhost:8080
+@baseUrl={{host}}/clips/v1
+
+### Health
+{{baseUrl}}/health
+
+### Get Clips
+{{baseUrl}}/
+
+### Get Clip
+{{baseUrl}}/1680286052.499712-c9y568.mp4
