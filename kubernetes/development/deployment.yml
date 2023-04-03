@@ -6,7 +6,7 @@ metadata:
     app: frigate-clips
     platform: frigate
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: frigate-clips
