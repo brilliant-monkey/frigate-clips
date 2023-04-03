@@ -3,7 +3,7 @@ type: docker
 name: default
 
 steps:
-- name: "[Master] Deploy"
+- name: "[Main] Deploy"
   image: quay.io/honestbee/drone-kubernetes
   settings:
     namespace: default
@@ -21,7 +21,7 @@ steps:
     event:
       - push
     branch:
-      - master
+      - main
 - name: "[Tag] Deploy"
   image: quay.io/honestbee/drone-kubernetes
   settings:
@@ -60,7 +60,7 @@ steps:
     event:
       - push
     branch: 
-      - master
+      - main
     status:
       - success
       - failure
