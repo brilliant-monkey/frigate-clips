@@ -10,7 +10,7 @@ steps:
     deployment: frigate-clips
     container: app
     repo: ghcr.io/brilliant-monkey/frigate-clips
-    tag: ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT:0:4}
+    tag: ${DRONE_COMMIT:0:7}
     kubernetes_server:
       from_secret: KUBE_SERVER
     kubernetes_token:
@@ -31,11 +31,11 @@ steps:
     repo: ghcr.io/brilliant-monkey/frigate-clips
     tag: ${DRONE_TAG}
     kubernetes_server:
-      from_secret: KUBE_SERVER_PROD
+      from_secret: KUBE_SERVER
     kubernetes_token:
-      from_secret: DRONE_TOKEN_PROD
+      from_secret: DRONE_TOKEN
     kubernetes_cert:
-      from_secret: KUBE_CA_PROD
+      from_secret: KUBE_CA
   when:
     event:
       - tag
