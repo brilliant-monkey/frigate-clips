@@ -66,13 +66,14 @@ func (consumer *FrigateEventConsumer) Consume() error {
 
 		const CLIP_LENGTH = 5 // TODO: dynamic clip length
 		timeScale := CLIP_LENGTH / duration
-		scaleFilter := "scale=320:-1"
+		// scaleFilter := "scale=320:-1"
 		ptsFilter := fmt.Sprintf("setpts=%f*PTS", timeScale)
 		outputArgs := []string{
 			"-vf", strings.Join([]string{
-				scaleFilter,
+				// scaleFilter,
 				ptsFilter,
 			}, ","),
+			"-an",
 		}
 
 		outputPath := fmt.Sprintf("%s/%s.mp4", consumer.config.FFMPEG.OutputDir, after.Id)
