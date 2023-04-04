@@ -45,13 +45,14 @@ func Transcode(inputPath string, outputPath string, inputArgs []string, outputAr
 	log.Println("Command: ")
 	err = cmd.Start()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return err
 	}
 
 	err = cmd.Wait()
 	if err != nil {
 		log.Println("Failed to wait for command to finish")
+		return err
 	}
 
 	fmt.Println("Command completed")
