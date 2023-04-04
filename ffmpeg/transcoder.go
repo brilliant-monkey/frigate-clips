@@ -42,7 +42,6 @@ func Transcode(inputPath string, outputPath string, inputArgs []string, outputAr
 	}
 
 	log.Printf("Starting FFMPEG on url %s.", inputPath)
-	log.Println("Command: ")
 	err = cmd.Start()
 	if err != nil {
 		log.Println(err)
