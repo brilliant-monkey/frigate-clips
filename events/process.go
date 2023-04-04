@@ -59,19 +59,22 @@ func (consumer *FrigateEventConsumer) Consume() error {
 		log.Printf("Processing event %s with duration of %f seconds.", after.Id, duration)
 		url := fmt.Sprintf("%s/%s/start/%f/end/%f/index.m3u8", consumer.config.Frigate.BaseUrl, camera, startTime/float64(time.Microsecond), endTime/float64(time.Microsecond))
 
-		const TRIM_SECONDS = 60 * 5
+		// const TRIM_SECONDS = 60 * 5
+		const TRIM_SECONDS = 5
 		inputArgs := []string{
-			"-t", fmt.Sprint(TRIM_SECONDS),
+			"-r:v", "100/1",
 		}
 
-		const CLIP_LENGTH = 5 // TODO: dynamic clip length
-		timeScale := CLIP_LENGTH / duration
-		// scaleFilter := "scale=320:-1"
-		ptsFilter := fmt.Sprintf("setpts=%f*PTS", timeScale)
+		// const CLIP_LENGTH = 5 // TODO: dynamic clip length
+		// timeScale := CLIP_LENGTH / duration
+		scaleFilter := "scale=320:-1"
+		// ptsFilter := fmt.Sprintf("setpts=%f*PTS", timeScale)
 		outputArgs := []string{
+			"-t", fmt.Sprint(TRIM_SECONDS),
 			"-vf", strings.Join([]string{
-				// scaleFilter,
-				ptsFilter,
+				scaleFilter,
+				// "select='not(mod(n,2))'",
+				// 	ptsFilter,
 			}, ","),
 			"-an",
 		}
