@@ -4,18 +4,16 @@ name: default
 
 steps:
 - name: Wait for Github
-  image: akhenakh/drone-waiton
-  settings:
-    globaltimeout: 5m
-    urls:
-    - https://github.com/orgs/brilliant-monkey/packages/container/${DRONE_REPO_NAME}/82689356?tag=${DRONE_COMMIT:0:7}
+  image: docker:20-dind-rootless
+  commands:
+    - until docker manifest inspect ghcr.io/${DRONE_REPO}:${DRONE_COMMIT:0:7}; do sleep 5; done
 - name: "[Main] Deploy"
   image: quay.io/honestbee/drone-kubernetes
   settings:
     namespace: default
-    deployment: frigate-clips
+    deployment: ${DRONE_REPO_NAME}
     container: app
-    repo: ghcr.io/brilliant-monkey/frigate-clips
+    repo: ghcr.io/${DRONE_REPO}
     tag: ${DRONE_COMMIT:0:7}
     kubernetes_server:
       from_secret: KUBE_SERVER
@@ -32,9 +30,9 @@ steps:
   image: quay.io/honestbee/drone-kubernetes
   settings:
     namespace: default
-    deployment: frigate-clips
+    deployment: ${DRONE_REPO_NAME}
     container: app
-    repo: ghcr.io/brilliant-monkey/frigate-clips
+    repo: ghcr.io/${DRONE_REPO}
     tag: ${DRONE_TAG}
     kubernetes_server:
       from_secret: KUBE_SERVER
