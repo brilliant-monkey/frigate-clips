@@ -3,6 +3,12 @@ type: docker
 name: default
 
 steps:
+- name: Wait for Github
+  image: akhenakh/drone-waiton
+  settings:
+    globaltimeout: 5m
+    urls:
+    - https://github.com/orgs/brilliant-monkey/packages/container/${DRONE_REPO_NAME}/82689356?tag=${DRONE_COMMIT:0:7}
 - name: "[Main] Deploy"
   image: quay.io/honestbee/drone-kubernetes
   settings:
