@@ -11,7 +11,7 @@ func Transcode(inputPath string, outputPath string, inputArgs []string, outputAr
 	log.Println("Building FFMPEG command")
 	generalArgs := []string{
 		"-hide_banner",
-		"-loglevel", "error",
+		// "-loglevel", "error",
 		"-y",
 	}
 
