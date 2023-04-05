@@ -44,9 +44,9 @@ func (consumer *FrigateEventConsumer) Consume() error {
 			return
 		}
 
-		if slices.Contains(event.After.EnteredZones, "property") {
-			log.Printf("Skipping event %s as it did not occur within watched zones.", event.After.Id)
-			return
+		if !slices.Contains(event.After.EnteredZones, "property") {
+		 log.Printf("Skipping event %s as it did not occur within watched zones.", event.After.Id)
+		 return
 		}
 
 		after := event.After
